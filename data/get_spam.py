@@ -26,6 +26,9 @@ SOURCES = {
         "description": "DataDog malicious-software-packages-dataset - known malicious PyPI packages",
     },
 }
+# these packages had specific releases that were compromised, but are not spam packages
+# themselves.
+NOT_SPAM: set[str] = set("num2words", "ultralytics")
 
 
 def extract_package_from_tarname(filename):
@@ -86,6 +89,9 @@ def main():
 
         print("Fetching from DataDog...", file=sys.stderr)
         all_packages.update(fetch_datadog())
+
+        # Remove NOT_SPAM
+        all_packages.remove(NOT_SPAM)
 
         print("Total unique packages:", len(all_packages), file=sys.stderr)
 
