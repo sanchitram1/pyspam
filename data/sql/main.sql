@@ -1,3 +1,7 @@
+-- General dump of all pypi.distribution_metadata table
+-- We might not need this anymore, if the individual sqls give us exactly what we need
+-- OR, we rewrite this to combine all the other SQLs for the final analysis
+-- TODO: there might be some redundancy here
 SELECT
   name,
   STRING_AGG(DISTINCT license, ', ') AS licenses,
