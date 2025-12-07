@@ -1,5 +1,5 @@
-INPUT_PATH = "pyspam_features.jsonl"
-OUTPUT_PATH = "pyspam_features_with_offline.jsonl"
+INPUT_PATH = "data/pyspam_features.jsonl"
+OUTPUT_PATH = "data/pyspam_features_with_offline.jsonl"
 
 # Example reference sets (you should replace / extend these)
 TOP_LEGIT_PACKAGES = [
