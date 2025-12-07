@@ -1,4 +1,6 @@
 import ast
+
+import numpy as np
 import pandas as pd
 
 
@@ -32,18 +34,22 @@ def parse_list_column(val):
 # -------------------------------------------------------
 
 
-def load_json(INPUT_PATH: str, lines=True) -> tuple[pd.DataFrame, pd.Series]:
+def load_json(INPUT_PATH: str, lines=True) -> tuple[pd.DataFrame, np.ndarray]:
     """
-    1. load raw jsonl dataset
-    2. enforce type consistency
+    Load raw JSONL dataset and enforce type consistency.
 
-    :param INPUT_PATH: Description
+    Processes the dataset to ensure:
+    - List-like columns are properly parsed as lists
+    - Boolean columns are converted to numeric (0/1)
+    - is_spam column is numeric and used to create legit_mask
+
+    :param INPUT_PATH: Path to the JSONL file to load
     :type INPUT_PATH: str
-    :param lines: Description
-    :return: Description
-    :rtype: tuple[DataFrame, Series[Any]]
+    :param lines: Whether the JSON file is in JSONL format (one JSON object per line)
+    :type lines: bool
+    :return: Tuple of (DataFrame with processed data, numpy array of boolean legit_mask)
+    :rtype: tuple[pd.DataFrame, np.ndarray]
     """
-
     df = pd.read_json(INPUT_PATH, lines=lines)
 
     # If some of these columns are stored as strings, we may want to ensure types:
