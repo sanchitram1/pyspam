@@ -1,5 +1,5 @@
-INPUT_PATH = "data/pyspam_features.jsonl"
-OUTPUT_PATH = "data/pyspam_features_with_offline.jsonl"
+INPUT_PATH = "data/~/Downloads/bq-results-20251207-093855-1765100428299.json"
+OUTPUT_PATH = "data/20251207-bq-results-with-mid-pkgs.jsonl"
 
 # Example reference sets (you should replace / extend these)
 TOP_LEGIT_PACKAGES = [

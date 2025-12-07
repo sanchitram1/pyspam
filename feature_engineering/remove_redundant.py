@@ -34,5 +34,4 @@ def drop_redundant(df: pd.DataFrame):
 
     # Only drop columns that actually exist in the dataframe
     existing_columns = [col for col in columns_to_drop if col in df.columns]
-    df.drop(columns=existing_columns, inplace=True)
-    return df
+    return df.drop(columns=existing_columns)
