@@ -4,7 +4,8 @@
 from settings import NUM_FILL_VALUES
 import pandas as pd
 
-def fill_null(df:pd.DataFrame):
+
+def fill_null(df: pd.DataFrame):
     for col, fill_value in NUM_FILL_VALUES.items():
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce").fillna(fill_value)

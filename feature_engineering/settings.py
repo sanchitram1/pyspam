@@ -3,18 +3,40 @@ OUTPUT_PATH = "pyspam_features_with_offline.jsonl"
 
 # Example reference sets (you should replace / extend these)
 TOP_LEGIT_PACKAGES = [
-    "requests", "numpy", "pandas", "flask", "django",
-    "scipy", "pytest", "matplotlib", "scikit-learn"
+    "requests",
+    "numpy",
+    "pandas",
+    "flask",
+    "django",
+    "scipy",
+    "pytest",
+    "matplotlib",
+    "scikit-learn",
 ]
 
 BRAND_ALIASES = [
-    "google", "microsoft", "amazon", "facebook", "meta",
-    "apple", "paypal", "stripe", "github", "gitlab"
+    "google",
+    "microsoft",
+    "amazon",
+    "facebook",
+    "meta",
+    "apple",
+    "paypal",
+    "stripe",
+    "github",
+    "gitlab",
 ]
 
 TOP_BRAND_PKGS = [
-    "django", "flask", "requests", "tensorflow", "torch",
-    "boto3", "azure", "google-cloud-storage", "stripe"
+    "django",
+    "flask",
+    "requests",
+    "tensorflow",
+    "torch",
+    "boto3",
+    "azure",
+    "google-cloud-storage",
+    "stripe",
 ]
 
 # Numerical replacements

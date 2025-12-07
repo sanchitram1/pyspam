@@ -1,7 +1,6 @@
-
 import pandas as pd
 import numpy as np
-from settings import TOP_BRAND_PKGS, TOP_LEGIT_PACKAGES, BRAND_ALIASES
+from settings import TOP_LEGIT_PACKAGES, BRAND_ALIASES
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from helper import min_levenshtein_to_set
@@ -33,5 +32,5 @@ def add_name_based(df: pd.DataFrame, legit_mask_np: pd.Series):
     ]
 
     df["sim_tfidf_to_legit_centroid"] = sim_to_legit_name
-    
+
     return df

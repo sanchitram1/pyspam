@@ -4,14 +4,12 @@
 #   - has_dependency_lev_close_to_brand
 # -------------------------------------------------------
 import math
+from typing import List
+
 import numpy as np
 import pandas as pd
-from typing import List
-from settings import TOP_BRAND_PKGS, LEV_THRESHOLD, BRAND_ALIASES
 from helper import extract_pkg_name_from_requirement, min_levenshtein_to_set
-
-
-
+from settings import BRAND_ALIASES, LEV_THRESHOLD, TOP_BRAND_PKGS
 
 
 def deps_base_names(deps: List[str]) -> List[str]:
@@ -19,7 +17,6 @@ def deps_base_names(deps: List[str]) -> List[str]:
 
 
 def handle_dependency(df: pd.DataFrame):
-
     dep_base_names = df["latest_dependencies"].apply(deps_base_names)
 
     # has_dependency_to_top_brand
@@ -40,9 +37,7 @@ def handle_dependency(df: pd.DataFrame):
             continue
         # compute minimum distance across all deps to any brand
         dists = [
-            min_levenshtein_to_set(base, brand_set_lower)
-            for base in bases
-            if base
+            min_levenshtein_to_set(base, brand_set_lower) for base in bases if base
         ]
         if not dists:
             min_dists.append(math.inf)

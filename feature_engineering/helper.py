@@ -1,6 +1,3 @@
-
-import pandas as pd
-import numpy as np
 import math
 from typing import Iterable, Tuple
 
@@ -26,8 +23,6 @@ def extract_pkg_name_from_requirement(req: str) -> str:
             base = base[:i]
             break
     return base.strip()
-
-
 
 
 # -------------------------------------------------------
@@ -64,8 +59,9 @@ def min_levenshtein_to_set(s: str, ref: Iterable[str]) -> int:
     return min(levenshtein(s_lower, r.lower()) for r in ref)
 
 
-def min_levenshtein_to_set_with_threshold(s: str, ref: Iterable[str], threshold: int) -> Tuple[int, bool]:
+def min_levenshtein_to_set_with_threshold(
+    s: str, ref: Iterable[str], threshold: int
+) -> Tuple[int, bool]:
     """Return (distance, is_close_flag)."""
     dist = min_levenshtein_to_set(s, ref)
     return dist, dist <= threshold
-
