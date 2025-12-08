@@ -1,6 +1,5 @@
 import ast
 
-import numpy as np
 import pandas as pd
 
 
@@ -50,6 +49,8 @@ def load_json(INPUT_PATH: str, lines=True) -> pd.DataFrame:
     :rtype: pd.DataFrame
     """
     df = pd.read_json(INPUT_PATH, lines=lines)
+
+    print(df.columns)
 
     # Clean up text columns that may have embedded newlines
     def clean_value(x):

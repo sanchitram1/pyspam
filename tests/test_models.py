@@ -16,7 +16,7 @@ warnings.filterwarnings("ignore")
 @pytest.fixture(scope="module")
 def test_data():
     """Load test data once per module."""
-    jsonl_file = Path("tests/test_raw.jsonl")
+    jsonl_file = Path("tests/test_data/test_training.jsonl")
     assert jsonl_file.exists(), f"{jsonl_file} not found"
 
     with open(jsonl_file) as f:
