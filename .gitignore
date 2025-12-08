@@ -10,4 +10,4 @@ wheels/
 .venv
 
 # data stuff
-*.csv
+data/
