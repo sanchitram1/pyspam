@@ -81,42 +81,73 @@ def svm_linear_spam_classifier():
     return path
 
 
-def test_model_loading(
-    test_data,
-    dtc_spam_classifier,
-    log_reg_spam_classifier,
-    rf_spam_classifier,
-    svm_linear_spam_classifier,
-):
-    """Test all classifier models load and predict correctly."""
-    X = test_data
+def test_dtc_model_loading(test_data, dtc_spam_classifier):
+    """Test decision tree classifier loads and predicts correctly."""
+    model = joblib.load(dtc_spam_classifier)
+    assert model is not None, "Failed to load dtc_spam_classifier"
 
-    for model_name in [
-        dtc_spam_classifier,
-        log_reg_spam_classifier,
-        rf_spam_classifier,
-        svm_linear_spam_classifier,
-    ]:
-        model_path = Path(model_name)
-        if not model_path.exists():
-            pytest.skip(f"{model_name} not found")
-
-        model = joblib.load(model_path)
-
-        # Verify feature count
-        if hasattr(model, "n_features_in_"):
-            assert model.n_features_in_ == X.shape[1], (
-                f"{model_name}: expected {model.n_features_in_} features, got {X.shape[1]}"
-            )
-
-        # Test prediction
-        prediction = model.predict(X)
-        assert prediction.shape == (1,), (
-            f"{model_name}: prediction shape {prediction.shape}"
+    if hasattr(model, "n_features_in_"):
+        assert model.n_features_in_ == test_data.shape[1], (
+            f"Expected {model.n_features_in_} features, got {test_data.shape[1]}"
         )
 
-        # Test proba if available
-        if hasattr(model, "predict_proba"):
-            proba = model.predict_proba(X)
-            assert proba.shape == (1, 2), f"{model_name}: proba shape {proba.shape}"
-            assert proba.shape == (1, 2), f"{model_name}: proba shape {proba.shape}"
+    prediction = model.predict(test_data)
+    assert prediction.shape == (1,), f"Prediction shape {prediction.shape}"
+
+    if hasattr(model, "predict_proba"):
+        proba = model.predict_proba(test_data)
+        assert proba.shape == (1, 2), f"Proba shape {proba.shape}"
+
+
+def test_log_reg_model_loading(test_data, log_reg_spam_classifier):
+    """Test logistic regression classifier loads and predicts correctly."""
+    model = joblib.load(log_reg_spam_classifier)
+    assert model is not None, "Failed to load log_reg_spam_classifier"
+
+    if hasattr(model, "n_features_in_"):
+        assert model.n_features_in_ == test_data.shape[1], (
+            f"Expected {model.n_features_in_} features, got {test_data.shape[1]}"
+        )
+
+    prediction = model.predict(test_data)
+    assert prediction.shape == (1,), f"Prediction shape {prediction.shape}"
+
+    if hasattr(model, "predict_proba"):
+        proba = model.predict_proba(test_data)
+        assert proba.shape == (1, 2), f"Proba shape {proba.shape}"
+
+
+def test_rf_model_loading(test_data, rf_spam_classifier):
+    """Test random forest classifier loads and predicts correctly."""
+    model = joblib.load(rf_spam_classifier)
+    assert model is not None, "Failed to load rf_spam_classifier"
+
+    if hasattr(model, "n_features_in_"):
+        assert model.n_features_in_ == test_data.shape[1], (
+            f"Expected {model.n_features_in_} features, got {test_data.shape[1]}"
+        )
+
+    prediction = model.predict(test_data)
+    assert prediction.shape == (1,), f"Prediction shape {prediction.shape}"
+
+    if hasattr(model, "predict_proba"):
+        proba = model.predict_proba(test_data)
+        assert proba.shape == (1, 2), f"Proba shape {proba.shape}"
+
+
+def test_svm_linear_model_loading(test_data, svm_linear_spam_classifier):
+    """Test SVM linear classifier loads and predicts correctly."""
+    model = joblib.load(svm_linear_spam_classifier)
+    assert model is not None, "Failed to load svm_linear_spam_classifier"
+
+    if hasattr(model, "n_features_in_"):
+        assert model.n_features_in_ == test_data.shape[1], (
+            f"Expected {model.n_features_in_} features, got {test_data.shape[1]}"
+        )
+
+    prediction = model.predict(test_data)
+    assert prediction.shape == (1,), f"Prediction shape {prediction.shape}"
+
+    if hasattr(model, "predict_proba"):
+        proba = model.predict_proba(test_data)
+        assert proba.shape == (1, 2), f"Proba shape {proba.shape}"
