@@ -12,6 +12,7 @@ dependencies = [
     "scikit-learn==1.7.1",
     "seaborn>=0.13.2",
     "statsmodels>=0.14.6",
+    "streamlit>=1.52.1",
 ]
 
 [tool.setuptools]
