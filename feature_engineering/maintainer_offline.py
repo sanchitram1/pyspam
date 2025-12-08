@@ -1,5 +1,5 @@
 import pandas as pd
-from settings import LOW_DOWNLOAD_THRESHOLD_30D
+from feature_engineering.settings import LOW_DOWNLOAD_THRESHOLD_30D
 
 
 # -------------------------------------------------------

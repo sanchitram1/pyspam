@@ -34,21 +34,20 @@ def parse_list_column(val):
 # -------------------------------------------------------
 
 
-def load_json(INPUT_PATH: str, lines=True) -> tuple[pd.DataFrame, np.ndarray]:
+def load_json(INPUT_PATH: str, lines=True) -> pd.DataFrame:
     """
     Load raw JSONL dataset and enforce type consistency.
 
     Processes the dataset to ensure:
     - List-like columns are properly parsed as lists
     - Boolean columns are converted to numeric (0/1)
-    - is_spam column is numeric and used to create legit_mask
 
     :param INPUT_PATH: Path to the JSONL file to load
     :type INPUT_PATH: str
     :param lines: Whether the JSON file is in JSONL format (one JSON object per line)
     :type lines: bool
-    :return: Tuple of (DataFrame with processed data, numpy array of boolean legit_mask)
-    :rtype: tuple[pd.DataFrame, np.ndarray]
+    :return: DataFrame with processed data
+    :rtype: pd.DataFrame
     """
     df = pd.read_json(INPUT_PATH, lines=lines)
 
@@ -105,11 +104,4 @@ def load_json(INPUT_PATH: str, lines=True) -> tuple[pd.DataFrame, np.ndarray]:
                 .astype(float)
             )
 
-    # ---- Ensure is_spam is numeric and build legit mask ----
-    if "is_spam" in df.columns:
-        df["is_spam"] = pd.to_numeric(df["is_spam"], errors="coerce")
-        legit_mask = df["is_spam"] == 0
-    else:
-        legit_mask = pd.Series([True] * len(df))
-
-    return df, legit_mask.to_numpy()
+    return df

@@ -2,7 +2,7 @@
 # Step 8: Fill Null
 # -----------------------------------------------------------
 import pandas as pd
-from settings import NUM_FILL_VALUES
+from feature_engineering.settings import NUM_FILL_VALUES
 
 
 def fill_null(df: pd.DataFrame):

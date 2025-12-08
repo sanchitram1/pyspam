@@ -8,8 +8,8 @@ from typing import List
 
 import numpy as np
 import pandas as pd
-from helper import extract_pkg_name_from_requirement, min_levenshtein_to_set
-from settings import BRAND_ALIASES, LEV_THRESHOLD, TOP_BRAND_PKGS
+from feature_engineering.helper import extract_pkg_name_from_requirement, min_levenshtein_to_set
+from feature_engineering.settings import BRAND_ALIASES, LEV_THRESHOLD, TOP_BRAND_PKGS
 
 
 def deps_base_names(deps: List[str]) -> List[str]:

@@ -2,8 +2,8 @@ import logging
 
 import numpy as np
 import pandas as pd
-from helper import min_levenshtein_to_set
-from settings import BRAND_ALIASES, TOP_LEGIT_PACKAGES
+from feature_engineering.helper import min_levenshtein_to_set
+from feature_engineering.settings import BRAND_ALIASES, TOP_LEGIT_PACKAGES
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
