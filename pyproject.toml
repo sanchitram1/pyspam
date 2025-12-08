@@ -5,9 +5,26 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "joblib>=1.5.2",
     "matplotlib>=3.10.7",
     "pandas==2.3.3",
-    "scikit-learn==1.7.2",
+    "scikit-learn==1.7.1",
     "seaborn>=0.13.2",
     "statsmodels>=0.14.6",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
+
+[tool.pytest]
+minversion = "9.0"
+addopts = ["-ra", "-q"]
+testpaths = [
+    "tests",
+]
+pythonpath = [
+    ".",
+]
+python_files = ["test_*.py", "*_test.py"]
