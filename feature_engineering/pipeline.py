@@ -74,6 +74,27 @@ def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def transform_single_package(package_data: dict) -> dict:
+    """
+    API ADAPTER: Takes a single JSON object (dict), processes it,
+    and returns the transformed features as a dict.
+    """
+    logger.info(f"Processing single package: {package_data.get('name', 'unknown')}")
+
+    # 1. Convert Dict -> DataFrame (1 row)
+    # We wrap it in a list [] so pandas understands it's a row, not columns
+    df = pd.DataFrame([package_data])
+
+    # 2. Run the Core Logic
+    processed_df = process_dataframe(df)
+
+    # 3. Convert DataFrame -> Dict
+    # 'records' gives us [{'col': val, ...}]
+    result_dict = processed_df.to_dict(orient="records")[0]
+
+    return result_dict
+
+
 def run_pipeline_file(input_path: str, output_path: str):
     """
     The CLI/Batch wrapper. Handles loading from disk and saving to disk.
@@ -98,7 +119,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output", default=OUTPUT_PATH, help="Path to output JSONL file"
     )
+    parser.add_argument(
+        "--single", action="store_true", help="Process a single package"
+    )
 
     args = parser.parse_args()
 
-    run_pipeline_file(args.input, args.output)
+    if args.single:
+        transform_single_package(args.input)
+    else:
+        run_pipeline_file(args.input, args.output)
