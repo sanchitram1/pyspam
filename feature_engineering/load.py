@@ -19,6 +19,8 @@ def load_training_data(filepath=None):
 
     filepath = Path(filepath)
 
+    print(f"Loading training data from {filepath.absolute()}")
+
     if not filepath.exists():
         raise FileNotFoundError(f"File not found: {filepath}")
 
