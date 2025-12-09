@@ -3,8 +3,6 @@
 -- Restricted to packages in pyspam.ground_truth
 -- ============================================================
 
--- TODO: Project -> pyspam !!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 WITH
 -- ------------------------------------------------------------------
@@ -13,8 +11,7 @@ WITH
 labeled_dist AS (
   SELECT dm.*
   FROM `bigquery-public-data.pypi.distribution_metadata` AS dm
-  JOIN `project.ground_truth` AS gt
-    ON dm.name = gt.package_name
+  WHERE dm.name = @pkg_name
 ),
 
 -- ------------------------------------------------------------------
@@ -24,20 +21,20 @@ labeled_dist AS (
 -- ------------------------------------------------------------------
 name_features AS (
   SELECT
-    gt.package_name AS pkg_name,
-    LENGTH(gt.package_name) AS n_name_len,
-    REGEXP_CONTAINS(gt.package_name, r'\d') AS has_digit_in_name,
-    REGEXP_CONTAINS(gt.package_name, r'[-_]') AS has_dash_or_underscore,
+    @pkg_name AS pkg_name,
+    LENGTH(@pkg_name) AS n_name_len,
+    REGEXP_CONTAINS(@pkg_name, r'\d') AS has_digit_in_name,
+    REGEXP_CONTAINS(@pkg_name, r'[-_]') AS has_dash_or_underscore,
     CASE
-      WHEN gt.package_name = LOWER(gt.package_name) THEN 'lower'
+      WHEN @pkg_name = LOWER(@pkg_name) THEN 'lower'
       WHEN REGEXP_CONTAINS(
-        gt.package_name,
+        @pkg_name,
         r'^[a-z]+([A-Z][a-z0-9]*)+$'
       ) THEN 'camel'
       ELSE 'mixed'
     END AS cat_name_case
-  FROM `project.ground_truth` AS gt
 ),
+
 
 -- ------------------------------------------------------------------
 -- 1. Aggregate metadata per project (your original all_metadata)
@@ -92,14 +89,12 @@ all_metadata AS (
         ).requires_dist
       ),
       0
-    ) AS latest_dependency_count,
+    ) AS latest_dependency_count
 
-    AVG(gt.is_spam) AS is_spam
   FROM labeled_dist AS dm
-  JOIN `project.ground_truth` AS gt
-    ON dm.name = gt.package_name
   GROUP BY dm.name
 ),
+
 
 -- ------------------------------------------------------------------
 -- B. Summary & Description Features (B.*)
@@ -454,9 +449,8 @@ downloads_raw AS (
     fd.file.project AS pkg_name,
     fd.timestamp
   FROM `bigquery-public-data.pypi.file_downloads` AS fd
-  JOIN `project.ground_truth` AS gt
-    ON fd.file.project = gt.package_name
-  WHERE DATE(fd.timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
+  WHERE fd.file.project = @pkg_name
+    AND DATE(fd.timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)
 ),
 downloads_agg AS (
   SELECT
@@ -600,8 +594,6 @@ final AS (
     am.distinct_classifiers,
     am.latest_dependencies,
 
-    -- Ground truth label
-    am.is_spam
 
   FROM all_metadata AS am
   JOIN agg_releases_with_gap AS ar
@@ -619,4 +611,5 @@ final AS (
 )
 
 SELECT *
-FROM final;
+FROM final
+WHERE pkg_name = @pkg_name;
