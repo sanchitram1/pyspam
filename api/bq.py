@@ -30,35 +30,14 @@ def fetch_package_metadata(package_name: str):
         return None
 
     # This query grabs the LATEST version of the package
-    query = """
-    SELECT
-        name,
-        version,
-        upload_time,
-        summary,
-        description,
-        author,
-        author_email,
-        maintainer,
-        maintainer_email,
-        home_page,
-        license,
-        project_urls,
-        keywords,
-        classifiers,
-        requires_dist,
-        requires_python,
-        requires_external
-    FROM `bigquery-public-data.pypi.distribution_metadata`
-    WHERE name = @pkg_name
-    ORDER BY upload_time DESC
-    LIMIT 1
-    """
+    with open("sql/training.sql") as f:
+        query = f.read()
 
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
             bigquery.ScalarQueryParameter("pkg_name", "STRING", package_name)
-        ]
+        ],
+        use_legacy_sql=False,
     )
 
     try:
@@ -98,7 +77,7 @@ if __name__ == "__main__":
     result = fetch_package_metadata(args.package_name)
 
     if result:
-        print(f"✅ Found package: {result['name']} (v{result['version']})")
+        print(f"✅ Found package: {result['pkg_name']} (v{result['versions']})")
         print("-" * 40)
         # Pretty print the JSON output
         print(json.dumps(result, indent=2, default=str))

@@ -84,6 +84,7 @@ def transform_single_package(package_data: dict) -> dict:
     # 1. Convert Dict -> DataFrame (1 row)
     # We wrap it in a list [] so pandas understands it's a row, not columns
     df = pd.DataFrame([package_data])
+    df['is_spam'] = 0  # Dummy value for processing
 
     # 2. Run the Core Logic
     processed_df = process_dataframe(df)
