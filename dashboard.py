@@ -87,6 +87,11 @@ def main():
         st.title("PyPI Package Risk Checker")
 
         pkg_name = st.text_input("Package name (e.g. requests)")
+
+        # TODO: run the pkg_name through api/main.py
+        # from api.main import main as scan_package
+        # results = scan_package(pkg_name)
+
         if st.button("Analyze") and pkg_name:
             if pkg_name not in df.index:
                 st.error("Package not found in feature dataset.")
