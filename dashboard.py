@@ -74,7 +74,9 @@ def main():
 
         # TODO: run the pkg_name through api/main.py
         if pkg_name:
+            print("💡 Fetching API")
             results = get(f"http://127.0.0.1:8000/scan/{pkg_name}")
+            print("✅ Got API")
             print(results.status_code)
             st.write(results.json())
 

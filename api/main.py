@@ -51,7 +51,10 @@ def scan_package(package_name: str):
 
     return {
         "package": package_name,
-        "raw_data": raw_data,
+        # TODO: raw data is erroring on the return, because
+        # of some serialization error, where it's not able
+        # to convert it into JSON.
+        # "raw_data": raw_data,
         "features": features_json,
         "prediction": prediction,
     }
