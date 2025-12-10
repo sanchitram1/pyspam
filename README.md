@@ -28,3 +28,24 @@ Need to run the below snippet for [bq.py](api/bq.py) to work
 ```
 gcloud auth application-default login
 ```
+
+To run the API, you need to run:
+
+```bash
+uv run uvicorn api.main:app --reload
+```
+
+## Dashboard
+
+
+
+> [!note]
+> To run the dashboard, you need to have two terminals, one that
+> runs the API, and one that runs the dashboard. See API to
+> determine how to run API
+
+To run the dashboard, execute the following in your terminal
+
+```bash
+uv run streamlit run dashboard.py
+```

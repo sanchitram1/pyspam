@@ -30,7 +30,7 @@ def fetch_package_metadata(package_name: str):
         return None
 
     # This query grabs the LATEST version of the package
-    with open("sql/training.sql") as f:
+    with open("sql/one_package.sql") as f:
         query = f.read()
 
     job_config = bigquery.QueryJobConfig(

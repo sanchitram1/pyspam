@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException
 import joblib
 import pandas as pd
+from fastapi import FastAPI, HTTPException
 
 from api.bq import fetch_package_metadata
 from feature_engineering.pipeline import transform_single_package
@@ -16,7 +16,7 @@ def health_check():
 @app.get("/scan/{package_name}")
 def scan_package(package_name: str):
     # 1. Fetch Raw Data (BigQuery)
-    print(f"Fetching {package_name}...")
+    print(f"***** Fetching {package_name}...")
     raw_data = fetch_package_metadata(package_name)
 
     if not raw_data:
@@ -49,11 +49,10 @@ def scan_package(package_name: str):
     # For now, let's just return the features to prove the pipeline works
     # TODO: the return should include prediction, AND features, AND raw_data
 
-    
     return {
         "package": package_name,
         "features_generated": len(features_json),
         "sample_feature": features_json.get("n_name_len"),  # Just to check logic
         "full_features": features_json,
-        "prediction": prediction
+        "prediction": prediction,
     }
