@@ -1,6 +1,5 @@
-import joblib
-import pandas as pd
 import streamlit as st
+from requests import get
 
 MODEL_FEATURE_COLUMNS = [
     "n_name_len",
@@ -56,18 +55,6 @@ MODEL_FEATURE_COLUMNS = [
 ]
 
 
-@st.cache_resource
-def load_model():
-    return joblib.load("random_forest_model.joblib")
-
-
-@st.cache_data
-def load_data():
-    df = pd.read_json("pyspam_features_with_offline.jsonl", lines=True)  # or CSV
-    df.set_index("pkg_name", inplace=True)
-    return df
-
-
 def classify_risk(score: float) -> str:
     if score >= 0.8:
         return "HIGH"
@@ -78,9 +65,6 @@ def classify_risk(score: float) -> str:
 
 
 def main():
-    model = load_model()
-    df = load_data()
-
     page = st.sidebar.radio("Navigate", ["Check a Package", "Explore Packages"])
 
     if page == "Check a Package":
@@ -89,132 +73,136 @@ def main():
         pkg_name = st.text_input("Package name (e.g. requests)")
 
         # TODO: run the pkg_name through api/main.py
-        # from api.main import main as scan_package
-        # results = scan_package(pkg_name)
+        if pkg_name:
+            print("💡 Fetching API")
+            results = get(f"http://127.0.0.1:8000/scan/{pkg_name}")
+            print("✅ Got API")
+            print(results.status_code)
+            st.write(results.json())
 
-        if st.button("Analyze") and pkg_name:
-            if pkg_name not in df.index:
-                st.error("Package not found in feature dataset.")
-                return
+    #     if st.button("Analyze") and pkg_name:
+    #         if pkg_name not in df.index:
+    #             st.error("Package not found in feature dataset.")
+    #             return
 
-            row = df.loc[[pkg_name]]
-            X = row[MODEL_FEATURE_COLUMNS]
-            score = float(model.predict_proba(X)[0, 1])
-            risk_label = classify_risk(score)
+    #         row = df.loc[[pkg_name]]
+    #         X = row[MODEL_FEATURE_COLUMNS]
+    #         score = float(model.predict_proba(X)[0, 1])
+    #         risk_label = classify_risk(score)
 
-            # --- Top cards (3 columns) ---
-            col1, col2, col3 = st.columns(3)
+    #         # --- Top cards (3 columns) ---
+    #         col1, col2, col3 = st.columns(3)
 
-            with col1:
-                st.subheader(pkg_name)
-                st.metric("Risk score", f"{score:.2f}", help="1.0 = highest risk")
-                st.write(f"**Risk level:** {risk_label}")
+    #         with col1:
+    #             st.subheader(pkg_name)
+    #             st.metric("Risk score", f"{score:.2f}", help="1.0 = highest risk")
+    #             st.write(f"**Risk level:** {risk_label}")
 
-            with col2:
-                st.subheader("Downloads")
-                st.metric("7 days", f"{row['n_downloads_7d'].values[0]}")
-                st.metric("30 days", f"{row['n_downloads_30d'].values[0]}")
+    #         with col2:
+    #             st.subheader("Downloads")
+    #             st.metric("7 days", f"{row['n_downloads_7d'].values[0]}")
+    #             st.metric("30 days", f"{row['n_downloads_30d'].values[0]}")
 
-            with col3:
-                st.subheader("Release activity")
-                st.metric("Versions", int(row["n_versions"].values[0]))
-                st.write("Single release:", bool(row["has_single_release"].values[0]))
-                st.write(
-                    "Age since first release (days):",
-                    int(row["t_age_first_release_days"].values[0]),
-                )
-                st.write(
-                    "Age since last release (days):",
-                    int(row["t_age_last_release_days"].values[0]),
-                )
+    #         with col3:
+    #             st.subheader("Release activity")
+    #             st.metric("Versions", int(row["n_versions"].values[0]))
+    #             st.write("Single release:", bool(row["has_single_release"].values[0]))
+    #             st.write(
+    #                 "Age since first release (days):",
+    #                 int(row["t_age_first_release_days"].values[0]),
+    #             )
+    #             st.write(
+    #                 "Age since last release (days):",
+    #                 int(row["t_age_last_release_days"].values[0]),
+    #             )
 
-            # --- Key signals sections ---
-            st.markdown("### Key signals")
+    #         # --- Key signals sections ---
+    #         st.markdown("### Key signals")
 
-            with st.expander("Activity & Downloads"):
-                st.write(
-                    row[
-                        [
-                            "n_downloads_7d",
-                            "n_downloads_30d",
-                            "n_versions",
-                            "has_single_release",
-                            "t_age_first_release_days",
-                            "t_age_last_release_days",
-                            "n_distributions",
-                        ]
-                    ]
-                )
+    #         with st.expander("Activity & Downloads"):
+    #             st.write(
+    #                 row[
+    #                     [
+    #                         "n_downloads_7d",
+    #                         "n_downloads_30d",
+    #                         "n_versions",
+    #                         "has_single_release",
+    #                         "t_age_first_release_days",
+    #                         "t_age_last_release_days",
+    #                         "n_distributions",
+    #                     ]
+    #                 ]
+    #             )
 
-            with st.expander("Repository & Ecosystem"):
-                st.write(
-                    row[
-                        [
-                            "has_repo_url",
-                            "cat_repo_host",
-                            "n_dependents_est",
-                            "min_dep_lev_to_brand",
-                            "n_requires",
-                        ]
-                    ]
-                )
+    #         with st.expander("Repository & Ecosystem"):
+    #             st.write(
+    #                 row[
+    #                     [
+    #                         "has_repo_url",
+    #                         "cat_repo_host",
+    #                         "n_dependents_est",
+    #                         "min_dep_lev_to_brand",
+    #                         "n_requires",
+    #                     ]
+    #                 ]
+    #             )
 
-            with st.expander("Maintainers"):
-                st.write(
-                    row[
-                        [
-                            "n_maintainers",
-                            "n_low_download_pkgs_by_maintainers",
-                            "n_pkgs_by_maintainers_30d",
-                        ]
-                    ]
-                )
+    #         with st.expander("Maintainers"):
+    #             st.write(
+    #                 row[
+    #                     [
+    #                         "n_maintainers",
+    #                         "n_low_download_pkgs_by_maintainers",
+    #                         "n_pkgs_by_maintainers_30d",
+    #                     ]
+    #                 ]
+    #             )
 
-            with st.expander("Description & Metadata"):
-                st.write(
-                    row[
-                        [
-                            "n_desc_len",
-                            "n_desc_lines",
-                            "n_summary_len",
-                            "n_classifiers",
-                            "has_homepage",
-                            "dist_embed_to_legit_desc",
-                        ]
-                    ]
-                )
+    #         with st.expander("Description & Metadata"):
+    #             st.write(
+    #                 row[
+    #                     [
+    #                         "n_desc_len",
+    #                         "n_desc_lines",
+    #                         "n_summary_len",
+    #                         "n_classifiers",
+    #                         "has_homepage",
+    #                         "dist_embed_to_legit_desc",
+    #                     ]
+    #                 ]
+    #             )
 
-    elif page == "Explore Packages":
-        st.title("Explore Packages by Risk")
+    # elif page == "Explore Packages":
+    #     st.title("Explore Packages by Risk")
 
-        # assume df already has risk_score/risk_label columns, or compute here
-        if "risk_score" not in df.columns:
-            X_all = df[MODEL_FEATURE_COLUMNS]
-            df["risk_score"] = model.predict_proba(X_all)[:, 1]
-            df["risk_label"] = df["risk_score"].apply(classify_risk)
+    #     # assume df already has risk_score/risk_label columns, or compute here
+    #     if "risk_score" not in df.columns:
+    #         X_all = df[MODEL_FEATURE_COLUMNS]
+    #         df["risk_score"] = model.predict_proba(X_all)[:, 1]
+    #         df["risk_label"] = df["risk_score"].apply(classify_risk)
 
-        min_score = st.sidebar.slider("Min risk score", 0.0, 1.0, 0.5, 0.01)
-        min_downloads = st.sidebar.number_input("Min 30d downloads", 0, value=0)
+    #     min_score = st.sidebar.slider("Min risk score", 0.0, 1.0, 0.5, 0.01)
+    #     min_downloads = st.sidebar.number_input("Min 30d downloads", 0, value=0)
 
-        mask = (df["risk_score"] >= min_score) & (
-            df["n_downloads_30d"] >= min_downloads
-        )
-        df_filtered = df.loc[
-            mask,
-            [
-                "risk_score",
-                "risk_label",
-                "n_downloads_7d",
-                "n_downloads_30d",
-                "n_versions",
-                "has_single_release",
-                "cat_repo_host",
-                "n_dependents_est",
-                "n_maintainers",
-            ],
-        ].sort_values("risk_score", ascending=False)
+    #     mask = (df["risk_score"] >= min_score) & (
+    #         df["n_downloads_30d"] >= min_downloads
+    #     )
+    #     df_filtered = df.loc[
+    #         mask,
+    #         [
+    #             "risk_score",
+    #             "risk_label",
+    #             "n_downloads_7d",
+    #             "n_downloads_30d",
+    #             "n_versions",
+    #             "has_single_release",
+    #             "cat_repo_host",
+    #             "n_dependents_est",
+    #             "n_maintainers",
+    #         ],
+    #     ].sort_values("risk_score", ascending=False)
 
-        st.dataframe(df_filtered)
+    #     st.dataframe(df_filtered)
 
 
 if __name__ == "__main__":
