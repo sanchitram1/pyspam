@@ -34,7 +34,7 @@ def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:
     The CORE logic. Accepts a DataFrame (1 row or 10k rows),
     runs all transformations, and returns the enriched DataFrame.
     """
-    logger.info(f"Processing DataFrame with shape: {df.shape}")
+    logger.debug(f"Processing DataFrame with shape: {df.shape}")
 
     # Step 1: Create legit mask
     if "is_spam" in df.columns:
@@ -44,31 +44,31 @@ def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
     # Step 2: Name-based features
     # (We skip "Step 1" because we assume data is already loaded into df)
-    logger.info("Computing name-based features")
+    logger.debug("Computing name-based features")
     df = add_name_based(df, legit_mask_np=legit_mask)
 
     # Step 3: Description-based features
-    logger.info("Computing description-based features")
+    logger.debug("Computing description-based features")
     df = handle_description(df, legit_mask)
 
     # Step 4: Maintainer-based features
-    logger.info("Computing maintainer-based features")
+    logger.debug("Computing maintainer-based features")
     df = handle_maintainers(df)
 
     # Step 5: Dependency-based features
-    logger.info("Computing dependency-based features")
+    logger.debug("Computing dependency-based features")
     df = handle_dependency(df)
 
     # Step 6: Time-based features
-    logger.info("Computing time-based features")
+    logger.debug("Computing time-based features")
     df = handle_time(df)
 
     # Step 7: Remove redundant columns
-    logger.info("Removing redundant columns")
+    logger.debug("Removing redundant columns")
     df = drop_redundant(df)
 
     # Step 8: Fill null values
-    logger.info("Filling null values")
+    logger.debug("Filling null values")
     df = fill_null(df)
 
     return df
@@ -79,12 +79,12 @@ def transform_single_package(package_data: dict) -> dict:
     API ADAPTER: Takes a single JSON object (dict), processes it,
     and returns the transformed features as a dict.
     """
-    logger.info(f"Processing single package: {package_data.get('name', 'unknown')}")
+    logger.debug(f"Processing single package: {package_data.get('name', 'unknown')}")
 
     # 1. Convert Dict -> DataFrame (1 row)
     # We wrap it in a list [] so pandas understands it's a row, not columns
     df = pd.DataFrame([package_data])
-    df['is_spam'] = 0  # Dummy value for processing
+    df["is_spam"] = 0  # Dummy value for processing
 
     # 2. Run the Core Logic
     processed_df = process_dataframe(df)
@@ -100,8 +100,8 @@ def run_pipeline_file(input_path: str, output_path: str):
     """
     The CLI/Batch wrapper. Handles loading from disk and saving to disk.
     """
-    logger.info("Starting batch file pipeline")
-    logger.info(f"Input: {input_path}, Output: {output_path}")
+    logger.debug("Starting batch file pipeline")
+    logger.debug(f"Input: {input_path}, Output: {output_path}")
 
     # Step 1: Load (IO)
     df = load_json(input_path)
@@ -111,7 +111,7 @@ def run_pipeline_file(input_path: str, output_path: str):
 
     # Step 9: Save (IO)
     save_json(processed_df, output_path)
-    logger.info("Batch pipeline completed successfully.")
+    logger.debug("Batch pipeline completed successfully.")
 
 
 if __name__ == "__main__":

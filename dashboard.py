@@ -1,6 +1,7 @@
 import streamlit as st
 from requests import get
 
+API_URL = "https://pyspam-api-922264108715.us-west1.run.app/scan"
 MODEL_FEATURE_COLUMNS = [
     "n_name_len",
     "has_digit_in_name",
@@ -75,9 +76,7 @@ def main():
         # TODO: run the pkg_name through api/main.py
         if pkg_name:
             print("💡 Fetching API")
-            results = get(f"http://127.0.0.1:8000/scan/{pkg_name}")
-            print("✅ Got API")
-            print(results.status_code)
+            results = get(f"{API_URL}/{pkg_name}")
             st.write(results.json())
 
     #     if st.button("Analyze") and pkg_name:

@@ -22,6 +22,7 @@ COPY feature_engineering/ ./feature_engineering/
 COPY spam/ ./spam/
 COPY models/ ./models/
 COPY training/ ./training/
+COPY sql/ ./sql/
 
 # Install dependencies (System-wide, no venv needed inside Docker)
 # We install the 'api' optional group we defined earlier
