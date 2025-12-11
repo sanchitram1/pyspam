@@ -49,3 +49,14 @@ To run the dashboard, execute the following in your terminal
 ```bash
 uv run streamlit run dashboard.py
 ```
+
+## Testing
+
+To see how many lines of code are successfully tested
+
+```bash
+coverage run --source=. -m pytest 
+coverage report
+```
+
+Tests are written in pytest. 
