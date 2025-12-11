@@ -1,6 +1,7 @@
 import joblib
 import pandas as pd
 from fastapi import FastAPI, HTTPException
+from fastapi.encoders import jsonable_encoder
 
 from api.bq import fetch_package_metadata
 from feature_engineering.pipeline import transform_single_package
@@ -49,12 +50,10 @@ def scan_package(package_name: str):
         print(f"Prediction Error: {e}")
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
-    return {
+    
+    return jsonable_encoder({
         "package": package_name,
-        # TODO: raw data is erroring on the return, because
-        # of some serialization error, where it's not able
-        # to convert it into JSON.
-        # "raw_data": raw_data,
+        "raw_data": raw_data,
         "features": features_json,
         "prediction": prediction,
-    }
+    })
