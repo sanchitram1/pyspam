@@ -1,13 +1,16 @@
 import os
-import requests
+
 import pandas as pd
 import plotly.express as px
+import requests
 import streamlit as st
 
 # ---------------------------------------------------------
 # Config
 # ---------------------------------------------------------
-API_URL = os.getenv("PYSPAM_API_URL", "http://127.0.0.1:8000/scan/")  # adjust to your real endpoint
+API_URL = os.getenv(
+    "PYSPAM_API_URL", "http://127.0.0.1:8000/scan/"
+)  # adjust to your real endpoint
 
 st.set_page_config(
     page_title="PyPI Risk Radar",
@@ -167,6 +170,7 @@ OFFLINE_FEATURE_KEYS = [
     "t_time_of_day",  # vs bucket
 ]
 
+
 def risk_tier(p: float):
     if p is None:
         return "Unknown", "low"
@@ -178,13 +182,16 @@ def risk_tier(p: float):
         return "High", "high"
     return "Critical", "critical"
 
+
 def bool_to_icon(v):
     if v is None:
         return "–"
     return "✅" if bool(v) else "❌"
 
+
 def safe_get(d, key, default=None):
     return d.get(key, default) if isinstance(d, dict) else default
+
 
 @st.cache_data(show_spinner=False)
 def fetch_package_data(api_url: str, pkg_name: str):
@@ -272,7 +279,7 @@ if go and pkg_name.strip():
                         <div class="risk-donut">
                             <div class="risk-donut-inner">
                                 <div class="risk-score">
-                                    {f"{risk_prob*100:.0f}%" if risk_prob is not None else "–"}
+                                    {f"{risk_prob * 100:.0f}%" if risk_prob is not None else "–"}
                                 </div>
                                 <div class="risk-score-label">SCAM RISK</div>
                                 <div style="margin-top:0.4rem;font-size:0.8rem;">
@@ -285,7 +292,7 @@ if go and pkg_name.strip():
                         </div>
                     </div>
                     <p style="margin-top:0.9rem;font-size:0.75rem;color:#9ca3af;">
-                        Probabilistic risk from your trained model. Thresholding is up to your policy.
+                        Risk profile
                     </p>
                 </div>
             """
@@ -305,32 +312,49 @@ if go and pkg_name.strip():
 
             with c1:
                 st.markdown('<div class="mini-card">', unsafe_allow_html=True)
-                st.markdown('<div class="metric-label">Downloads (7d)</div>', unsafe_allow_html=True)
                 st.markdown(
-                    f'<div class="metric-value">{int(n_downloads_7d):,}' if n_downloads_7d is not None else
-                    '<div class="metric-value">–',
+                    '<div class="metric-label">Downloads (7d)</div>',
                     unsafe_allow_html=True,
                 )
-                st.markdown('<div style="font-size:0.75rem;color:#9ca3af;">Recent velocity</div>', unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
+                st.markdown(
+                    f'<div class="metric-value">{int(n_downloads_7d):,}'
+                    if n_downloads_7d is not None
+                    else '<div class="metric-value">–',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    '<div style="font-size:0.75rem;color:#9ca3af;">Recent velocity</div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown("</div>", unsafe_allow_html=True)
 
             with c2:
                 st.markdown('<div class="mini-card">', unsafe_allow_html=True)
-                st.markdown('<div class="metric-label">Downloads (30d)</div>', unsafe_allow_html=True)
                 st.markdown(
-                    f'<div class="metric-value">{int(n_downloads_30d):,}' if n_downloads_30d is not None else
-                    '<div class="metric-value">–',
+                    '<div class="metric-label">Downloads (30d)</div>',
                     unsafe_allow_html=True,
                 )
-                st.markdown('<div style="font-size:0.75rem;color:#9ca3af;">Medium-term usage</div>', unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
+                st.markdown(
+                    f'<div class="metric-value">{int(n_downloads_30d):,}'
+                    if n_downloads_30d is not None
+                    else '<div class="metric-value">–',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    '<div style="font-size:0.75rem;color:#9ca3af;">Medium-term usage</div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown("</div>", unsafe_allow_html=True)
 
             with c3:
                 st.markdown('<div class="mini-card">', unsafe_allow_html=True)
-                st.markdown('<div class="metric-label">Versions</div>', unsafe_allow_html=True)
                 st.markdown(
-                    f'<div class="metric-value">{int(n_versions)}</div>' if n_versions is not None else
-                    '<div class="metric-value">–</div>',
+                    '<div class="metric-label">Versions</div>', unsafe_allow_html=True
+                )
+                st.markdown(
+                    f'<div class="metric-value">{int(n_versions)}</div>'
+                    if n_versions is not None
+                    else '<div class="metric-value">–</div>',
                     unsafe_allow_html=True,
                 )
                 single_flag = bool(safe_get(raw_data, "has_single_release"))
@@ -338,23 +362,31 @@ if go and pkg_name.strip():
                     f'<div style="font-size:0.75rem;color:#9ca3af;">{"Single release only" if single_flag else "Release history"}</div>',
                     unsafe_allow_html=True,
                 )
-                st.markdown('</div>', unsafe_allow_html=True)
+                st.markdown("</div>", unsafe_allow_html=True)
 
             with c4:
                 st.markdown('<div class="mini-card">', unsafe_allow_html=True)
-                st.markdown('<div class="metric-label">Maintainers</div>', unsafe_allow_html=True)
                 st.markdown(
-                    f'<div class="metric-value">{int(n_maintainers)}</div>' if n_maintainers is not None else
-                    '<div class="metric-value">–</div>',
+                    '<div class="metric-label">Maintainers</div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(
+                    f'<div class="metric-value">{int(n_maintainers)}</div>'
+                    if n_maintainers is not None
+                    else '<div class="metric-value">–</div>',
                     unsafe_allow_html=True,
                 )
                 pct_free = safe_get(raw_data, "pct_free_email_domains")
-                pct_text = f"{pct_free*100:.0f}% free domains" if pct_free is not None else "Email hygiene"
+                pct_text = (
+                    f"{pct_free * 100:.0f}% free domains"
+                    if pct_free is not None
+                    else "Email hygiene"
+                )
                 st.markdown(
                     f'<div style="font-size:0.75rem;color:#9ca3af;">{pct_text}</div>',
                     unsafe_allow_html=True,
                 )
-                st.markdown('</div>', unsafe_allow_html=True)
+                st.markdown("</div>", unsafe_allow_html=True)
 
             # Downloads 7d vs 30d bar
             if (n_downloads_7d is not None) or (n_downloads_30d is not None):
@@ -383,15 +415,26 @@ if go and pkg_name.strip():
                     plot_bgcolor="rgba(0,0,0,0)",
                     paper_bgcolor="rgba(0,0,0,0)",
                 )
-                fig_dl.update_yaxes(showgrid=True, gridwidth=0.3, gridcolor="rgba(148,163,184,0.35)")
+                fig_dl.update_yaxes(
+                    showgrid=True, gridwidth=0.3, gridcolor="rgba(148,163,184,0.35)"
+                )
                 st.markdown(" ", unsafe_allow_html=True)
-                st.plotly_chart(fig_dl, use_container_width=True, config={"displayModeBar": False})
+                st.plotly_chart(
+                    fig_dl, use_container_width=True, config={"displayModeBar": False}
+                )
 
         # ---------------------------------------------
         # TABS: Identity, Release, Ownership & Links, License & Deps, ML Signals, Raw fields
         # ---------------------------------------------
         tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
-            ["🧬 Identity & Text", "📡 Releases", "👤 Ownership & Links", "📜 License & Deps", "🤖 ML Signals", "🧾 Raw Fields"]
+            [
+                "🧬 Identity & Text",
+                "📡 Releases",
+                "👤 Ownership & Links",
+                "📜 License & Deps",
+                "🤖 ML Signals",
+                "🧾 Raw Fields",
+            ]
         )
 
         # ---------- Tab 1: Identity & Text ----------
@@ -403,10 +446,21 @@ if go and pkg_name.strip():
             with col_id:
                 id_rows = [
                     ["Name length", safe_get(raw_data, "n_name_len")],
-                    ["Has digit in name", bool_to_icon(safe_get(raw_data, "has_digit_in_name"))],
-                    ["Has dash/underscore", bool_to_icon(safe_get(raw_data, "has_dash_or_underscore"))],
+                    [
+                        "Has digit in name",
+                        bool_to_icon(safe_get(raw_data, "has_digit_in_name")),
+                    ],
+                    [
+                        "Has dash/underscore",
+                        bool_to_icon(safe_get(raw_data, "has_dash_or_underscore")),
+                    ],
                     ["Name casing", safe_get(raw_data, "cat_name_case")],
-                    ["Suspicious name & dep rule", bool_to_icon(safe_get(raw_data, "rule_suspicious_name_and_dep"))],
+                    [
+                        "Suspicious name & dep rule",
+                        bool_to_icon(
+                            safe_get(raw_data, "rule_suspicious_name_and_dep")
+                        ),
+                    ],
                 ]
                 df_id = pd.DataFrame(id_rows, columns=["Feature", "Value"])
                 st.dataframe(df_id, use_container_width=True, hide_index=True)
@@ -416,11 +470,23 @@ if go and pkg_name.strip():
                     ["Summary length (chars)", safe_get(raw_data, "n_summary_len")],
                     ["Description length (chars)", safe_get(raw_data, "n_desc_len")],
                     ["Description lines", safe_get(raw_data, "n_desc_lines")],
-                    ["Code block in description", bool_to_icon(safe_get(raw_data, "has_code_block_in_desc"))],
+                    [
+                        "Code block in description",
+                        bool_to_icon(safe_get(raw_data, "has_code_block_in_desc")),
+                    ],
                     ["URLs in description", safe_get(raw_data, "n_urls_in_desc")],
-                    ["Suspicious keywords in desc", bool_to_icon(safe_get(raw_data, "has_suspicious_kw"))],
-                    ["Non-ASCII fraction in desc", safe_get(raw_data, "pct_non_ascii_desc")],
-                    ["No repo & short desc rule", bool_to_icon(safe_get(raw_data, "rule_no_repo_low_desc_len"))],
+                    [
+                        "Suspicious keywords in desc",
+                        bool_to_icon(safe_get(raw_data, "has_suspicious_kw")),
+                    ],
+                    [
+                        "Non-ASCII fraction in desc",
+                        safe_get(raw_data, "pct_non_ascii_desc"),
+                    ],
+                    [
+                        "No repo & short desc rule",
+                        bool_to_icon(safe_get(raw_data, "rule_no_repo_low_desc_len")),
+                    ],
                 ]
                 df_txt = pd.DataFrame(txt_rows, columns=["Feature", "Value"])
                 st.dataframe(df_txt, use_container_width=True, hide_index=True)
@@ -435,9 +501,18 @@ if go and pkg_name.strip():
                 rel_rows = [
                     ["Age since first release (days)", age_first],
                     ["Age since last release (days)", age_last],
-                    ["Median gap between releases (days)", safe_get(raw_data, "t_median_release_gap_days")],
-                    ["Time-of-day bucket (last)", safe_get(raw_data, "t_time_of_day_bucket")],
-                    ["Weekday of last release", safe_get(raw_data, "cat_weekday_of_last_release")],
+                    [
+                        "Median gap between releases (days)",
+                        safe_get(raw_data, "t_median_release_gap_days"),
+                    ],
+                    [
+                        "Time-of-day bucket (last)",
+                        safe_get(raw_data, "t_time_of_day_bucket"),
+                    ],
+                    [
+                        "Weekday of last release",
+                        safe_get(raw_data, "cat_weekday_of_last_release"),
+                    ],
                 ]
                 df_rel = pd.DataFrame(rel_rows, columns=["Feature", "Value"])
                 st.dataframe(df_rel, use_container_width=True, hide_index=True)
@@ -461,9 +536,18 @@ if go and pkg_name.strip():
             with col_own:
                 own_rows = [
                     ["Maintainers (count)", n_maintainers],
-                    ["% Free email domains", safe_get(raw_data, "pct_free_email_domains")],
-                    ["Has disposable email", bool_to_icon(safe_get(raw_data, "has_disposable_email"))],
-                    ["Missing author list", bool_to_icon(safe_get(raw_data, "has_missing_author"))],
+                    [
+                        "% Free email domains",
+                        safe_get(raw_data, "pct_free_email_domains"),
+                    ],
+                    [
+                        "Has disposable email",
+                        bool_to_icon(safe_get(raw_data, "has_disposable_email")),
+                    ],
+                    [
+                        "Missing author list",
+                        bool_to_icon(safe_get(raw_data, "has_missing_author")),
+                    ],
                 ]
                 df_own = pd.DataFrame(own_rows, columns=["Feature", "Value"])
                 st.dataframe(df_own, use_container_width=True, hide_index=True)
@@ -473,7 +557,10 @@ if go and pkg_name.strip():
                     ["Has homepage", bool_to_icon(safe_get(raw_data, "has_homepage"))],
                     ["Has repo URL", bool_to_icon(safe_get(raw_data, "has_repo_url"))],
                     ["Repo host category", safe_get(raw_data, "cat_repo_host")],
-                    ["Has issue tracker", bool_to_icon(safe_get(raw_data, "has_issue_tracker"))],
+                    [
+                        "Has issue tracker",
+                        bool_to_icon(safe_get(raw_data, "has_issue_tracker")),
+                    ],
                     ["Has docs URL", bool_to_icon(safe_get(raw_data, "has_docs_url"))],
                 ]
                 df_link = pd.DataFrame(link_rows, columns=["Feature", "Value"])
@@ -490,8 +577,14 @@ if go and pkg_name.strip():
                     ["Has license", bool_to_icon(safe_get(raw_data, "has_license"))],
                     ["License family", safe_get(raw_data, "cat_license_family")],
                     ["Number of classifiers", safe_get(raw_data, "n_classifiers")],
-                    ["Has Python language classifier", bool_to_icon(safe_get(raw_data, "has_prog_lang_classifier"))],
-                    ["Has typing classifier", bool_to_icon(safe_get(raw_data, "has_typing_classifier"))],
+                    [
+                        "Has Python language classifier",
+                        bool_to_icon(safe_get(raw_data, "has_prog_lang_classifier")),
+                    ],
+                    [
+                        "Has typing classifier",
+                        bool_to_icon(safe_get(raw_data, "has_typing_classifier")),
+                    ],
                 ]
                 df_lic = pd.DataFrame(lic_rows, columns=["Feature", "Value"])
                 st.dataframe(df_lic, use_container_width=True, hide_index=True)
@@ -522,7 +615,9 @@ if go and pkg_name.strip():
                 st.dataframe(df_ml, use_container_width=True, hide_index=True)
 
                 # Simple bar chart for numeric-only subset
-                numeric_df = df_ml[pd.to_numeric(df_ml["Value"], errors="coerce").notna()].copy()
+                numeric_df = df_ml[
+                    pd.to_numeric(df_ml["Value"], errors="coerce").notna()
+                ].copy()
                 if not numeric_df.empty:
                     numeric_df["Value"] = numeric_df["Value"].astype(float)
                     fig_ml = px.bar(
@@ -539,8 +634,14 @@ if go and pkg_name.strip():
                         plot_bgcolor="rgba(0,0,0,0)",
                         paper_bgcolor="rgba(0,0,0,0)",
                     )
-                    fig_ml.update_yaxes(showgrid=True, gridwidth=0.3, gridcolor="rgba(148,163,184,0.35)")
-                    st.plotly_chart(fig_ml, use_container_width=True, config={"displayModeBar": False})
+                    fig_ml.update_yaxes(
+                        showgrid=True, gridwidth=0.3, gridcolor="rgba(148,163,184,0.35)"
+                    )
+                    st.plotly_chart(
+                        fig_ml,
+                        use_container_width=True,
+                        config={"displayModeBar": False},
+                    )
 
         # ---------- Tab 6: Raw fields ----------
         with tab6:
