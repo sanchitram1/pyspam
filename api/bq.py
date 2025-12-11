@@ -4,6 +4,7 @@ import logging
 from datetime import datetime
 
 from google.cloud import bigquery
+from api.json_cleaner import make_json_safe
 
 # Configure logging for standalone use
 logging.basicConfig(level=logging.INFO)
@@ -58,8 +59,11 @@ def fetch_package_metadata(package_name: str):
     for key, value in record.items():
         if isinstance(value, datetime):
             record[key] = value.isoformat()
+    
+    # Clean up the result (make it JSON-safe)
+    result_dict = make_json_safe(record)
 
-    return record
+    return result_dict
 
 
 if __name__ == "__main__":
