@@ -284,7 +284,6 @@ if go and pkg_name.strip():
                             </div>
                         </div>
                     </div>
-                    
                     <p style="margin-top:0.9rem;font-size:0.75rem;color:#9ca3af;">
                         Probabilistic risk from your trained model. Thresholding is up to your policy.
                     </p>
