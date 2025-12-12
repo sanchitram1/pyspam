@@ -37,8 +37,6 @@ uv run uvicorn api.main:app --reload
 
 ## Dashboard
 
-
-
 > [!note]
 > To run the dashboard, you need to have two terminals, one that
 > runs the API, and one that runs the dashboard. See API to

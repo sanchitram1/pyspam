@@ -4,6 +4,7 @@ import logging
 from datetime import datetime
 
 from google.cloud import bigquery
+
 from api.json_cleaner import make_json_safe
 
 # Configure logging for standalone use
@@ -59,7 +60,7 @@ def fetch_package_metadata(package_name: str):
     for key, value in record.items():
         if isinstance(value, datetime):
             record[key] = value.isoformat()
-    
+
     # Clean up the result (make it JSON-safe)
     result_dict = make_json_safe(record)
 
@@ -86,4 +87,6 @@ if __name__ == "__main__":
         # Pretty print the JSON output
         print(json.dumps(result, indent=2, default=str))
     else:
+        print(f"❌ Package '{args.package_name}' not found in BigQuery dataset.")
+        print(f"❌ Package '{args.package_name}' not found in BigQuery dataset.")
         print(f"❌ Package '{args.package_name}' not found in BigQuery dataset.")
