@@ -73,6 +73,79 @@ gcloud services enable cloudbuild.googleapis.com run.googleapis.com
 gcloud run deploy pyspam-api --source .
 ```
 
+## Model Context Protocol (MCP)
+
+This repository includes a standalone MCP server (mcp_server/) that allows AI agents 
+(like Claude Desktop or Cursor) to natively "consult" the PySpam API before suggesting 
+packages.
+
+### Quick Start (Requires [`pkgx`](https://pkgx.sh))
+
+The server script is self-bootstrapping. It uses a shebang to automatically pull the 
+correct Python version and dependencies (mcp, httpx) via pkgx + uv.
+
+**1. Install pkgx (if not installed):**
+
+```bash
+curl -Ssf https://pkgx.sh | sh
+```
+
+**2. Make executable:**
+
+```bash
+chmod +x mcp_server/server.py
+```
+
+**3. Verify it runs:**
+
+```bash
+./mcp_server/server.py
+```
+If successful, it will hang silently (listening on stdio). Press Ctrl+C to exit.
+
+
+### Client Configuration
+
+To use this with your AI editor, add the configuration below to your MCP Settings file.
+
+- Cursor: Cmd+Shift+P > MCP: Open Settings File
+- Claude Desktop: ~/Library/Application Support/Claude/claude_desktop_config.json
+
+**Option 1:** The pkgx Method (Recommended) Since the script is executable, you can 
+point the client directly to the file. Note: You must use the absolute path to the repo.
+
+```json
+{
+  "mcpServers": {
+    "pyspam": {
+      "command": "/ABSOLUTE/PATH/TO/pyspam/mcp_server/server.py",
+      "args": []
+    }
+  }
+}
+```
+
+**Option 2:** The Standard uv Method If you do not use pkgx, you can invoke the server 
+using standard uv.
+
+```json
+{
+  "mcpServers": {
+    "pyspam": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with", 
+        "mcp", 
+        "--with", 
+        "httpx",
+        "/ABSOLUTE/PATH/TO/pyspam/mcp_server/server.py"
+      ]
+    }
+  }
+}
+```
+
 ## Tasks
 
 ### install
