@@ -69,10 +69,10 @@ class TestCreateLegitMask:
         df = pd.DataFrame({"is_spam": ["0", "1", "invalid"]})
         mask = create_legit_mask(df)
         # "0" -> 0 (legitimate), "1" -> 1 (spam), "invalid" -> NaN (should be False == 0)
-        assert mask[0] is True  # "0" == 0
-        assert mask[1] is False  # "1" != 0
+        assert mask[0]
+        assert not mask[1]
         # For "invalid" that becomes NaN, NaN == 0 is False
-        assert mask[2] is False
+        assert not mask[2]
 
     def test_float_values_in_is_spam(self):
         """Test with float values in is_spam column."""
@@ -94,7 +94,7 @@ class TestCreateLegitMask:
         df = pd.DataFrame({"is_spam": [0]})
         mask = create_legit_mask(df)
         assert mask.shape == (1,)
-        assert mask[0] is True
+        assert mask[0]
 
     def test_preserves_dataframe(self):
         """Test that function doesn't modify original DataFrame."""

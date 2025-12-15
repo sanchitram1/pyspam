@@ -1,5 +1,8 @@
 # PySpam
 
+[![Tests Passing](https://img.shields.io/badge/tests-54%20passing-green)](https://github.com/sanchitram1/pyspam/actions)
+[![Coverage](https://img.shields.io/badge/coverage-81%25-brightgreen)](https://github.com/sanchitram1/pyspam)
+
 A tool for identifying spam packages on Python's registry.
 
 ## Installation
@@ -58,3 +61,14 @@ coverage report
 ```
 
 Tests are written in pytest. 
+
+## Deploy
+
+Requires: `gcloud`
+
+```bash
+gcloud auth login
+gcloud config set project $PROJECT_ID
+gcloud services enable cloudbuild.googleapis.com run.googleapis.com
+gcloud run deploy pyspam-api --source .
+```

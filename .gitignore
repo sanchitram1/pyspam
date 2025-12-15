@@ -11,3 +11,10 @@ wheels/
 
 # data stuff
 data/
+
+# Coverage reports
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover

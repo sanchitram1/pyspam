@@ -40,7 +40,7 @@ dev = [
 
 [tool.pytest]
 minversion = "9.0"
-addopts = ["-ra", "-q"]
+addopts = ["-ra", "-q", "--cov", "--cov-report=term-missing"]
 testpaths = [
     "tests",
 ]
@@ -48,3 +48,16 @@ pythonpath = [
     ".",
 ]
 python_files = ["test_*.py", "*_test.py"]
+
+[tool.coverage.run]
+source = [
+    "api",
+    "feature_engineering",
+    "spam"
+]
+omit = [
+    "*/__init__.py"
+]
+
+[tool.coverage.report]
+show_missing = true
