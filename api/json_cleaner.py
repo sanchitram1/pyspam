@@ -1,8 +1,8 @@
-import datetime
 import numpy as np
 
 
 # Convert numpy arrays to lists, cuz fastapi doesn't like numpy arrays in json responses
+
 
 def make_json_safe(record: dict) -> dict:
     safe = {}

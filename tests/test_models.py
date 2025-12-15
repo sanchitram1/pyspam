@@ -50,6 +50,11 @@ def test_data():
 
 
 @pytest.fixture(scope="module")
+def test_svm_data(test_data):
+    return test_data[:, :-1]
+
+
+@pytest.fixture(scope="module")
 def dtc_spam_classifier():
     """Load decision tree classifier path."""
     path = Path("models/dtc_spam_classifier.joblib")
@@ -135,19 +140,19 @@ def test_rf_model_loading(test_data, rf_spam_classifier):
         assert proba.shape == (1, 2), f"Proba shape {proba.shape}"
 
 
-def test_svm_linear_model_loading(test_data, svm_linear_spam_classifier):
+def test_svm_linear_model_loading(test_svm_data, svm_linear_spam_classifier):
     """Test SVM linear classifier loads and predicts correctly."""
     model = joblib.load(svm_linear_spam_classifier)
     assert model is not None, "Failed to load svm_linear_spam_classifier"
 
     if hasattr(model, "n_features_in_"):
-        assert model.n_features_in_ == test_data.shape[1], (
+        assert model.n_features_in_ == test_svm_data.shape[1], (
             f"Expected {model.n_features_in_} features, got {test_data.shape[1]}"
         )
 
-    prediction = model.predict(test_data)
+    prediction = model.predict(test_svm_data)
     assert prediction.shape == (1,), f"Prediction shape {prediction.shape}"
 
     if hasattr(model, "predict_proba"):
-        proba = model.predict_proba(test_data)
+        proba = model.predict_proba(test_svm_data)
         assert proba.shape == (1, 2), f"Proba shape {proba.shape}"

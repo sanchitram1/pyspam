@@ -50,10 +50,11 @@ def scan_package(package_name: str):
         print(f"Prediction Error: {e}")
         raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
 
-    
-    return jsonable_encoder({
-        "package": package_name,
-        "raw_data": raw_data,
-        "features": features_json,
-        "prediction": prediction,
-    })
+    return jsonable_encoder(
+        {
+            "package": package_name,
+            "raw_data": raw_data,
+            "features": features_json,
+            "prediction": prediction,
+        }
+    )

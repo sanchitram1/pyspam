@@ -14,7 +14,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import classification_report
 
 
-data_path = '/Users/reezhan/Downloads/20251207-bq-results-with-mid-pkgs.jsonl'
+data_path = "/Users/reezhan/Downloads/20251207-bq-results-with-mid-pkgs.jsonl"
 df = pd.read_json(data_path, lines=True)
 
 drop_cols = ["pkg_name", "is_spam"]

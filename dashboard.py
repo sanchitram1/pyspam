@@ -5,11 +5,9 @@ import plotly.express as px
 import requests
 import streamlit as st
 
-# ---------------------------------------------------------
 # Config
-# ---------------------------------------------------------
 API_URL = os.getenv(
-    "PYSPAM_API_URL", "http://127.0.0.1:8000/scan/"
+    "PYSPAM_API_URL", "https://pyspam-api-605094789848.us-west1.run.app/scan/"
 )  # adjust to your real endpoint
 
 st.set_page_config(
@@ -18,9 +16,6 @@ st.set_page_config(
     layout="wide",
 )
 
-# ---------------------------------------------------------
-# Custom CSS for Elon-style sleek UI (dark, minimal)
-# ---------------------------------------------------------
 st.markdown(
     """
     <style>
@@ -152,10 +147,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ---------------------------------------------------------
 # Helpers
-# ---------------------------------------------------------
-
 OFFLINE_FEATURE_KEYS = [
     "n_lev_dist_to_top1",
     "n_lev_dist_to_alias",
@@ -201,9 +193,7 @@ def fetch_package_data(api_url: str, pkg_name: str):
     return resp.json()
 
 
-# ---------------------------------------------------------
 # Layout: Header & Controls
-# ---------------------------------------------------------
 col_title, col_input = st.columns([2, 3])
 
 with col_title:
@@ -241,9 +231,7 @@ with col_input:
         )
         go = st.button("Scan package 🚀", type="primary", use_container_width=True)
 
-# ---------------------------------------------------------
 # Fetch & show results
-# ---------------------------------------------------------
 if go and pkg_name.strip():
     try:
         with st.spinner("Contacting API and computing threat profile..."):
