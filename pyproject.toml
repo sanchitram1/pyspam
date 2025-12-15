@@ -25,6 +25,10 @@ api = [
     "joblib>=1.5.2",
     "uvicorn>=0.38.0",
 ]
+mcp = [
+    "httpx>=0.28.1",
+    "mcp>=1.24.0",
+]
 
 [dependency-groups]
 dev = [

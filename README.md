@@ -15,7 +15,7 @@ run `uv sync --all-extras`
 
 ## Training
 
-All the training code is in [feature_engineering](./feature_engineering) . To
+All the training code is in [feature_engineering](./feature_engineering). To
 run it, just:
 
 ```sh
@@ -71,4 +71,39 @@ gcloud auth login
 gcloud config set project $PROJECT_ID
 gcloud services enable cloudbuild.googleapis.com run.googleapis.com
 gcloud run deploy pyspam-api --source .
+```
+
+## Tasks
+
+### install
+
+Installs the packages exposed by this repo
+
+```bash
+uv pip install -e .
+```
+
+### sync-all
+
+Gets all the requirements you need for developing everything
+
+Requires: install
+
+```bash
+uv sync all-extras
+```
+
+### test 
+
+Runs all the tests
+
+```bash
+pytest .
+```
+
+### lint
+
+```bash
+ruff format . 
+ruff check . --fix
 ```
