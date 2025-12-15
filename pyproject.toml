@@ -25,17 +25,19 @@ api = [
     "uvicorn>=0.38.0",
 ]
 
+[dependency-groups]
+dev = [
+    "coverage>=7.13.0",
+    "formdt>=0.4.0",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.9",
+]
+
 [tool.setuptools]
 packages = [
     "feature_engineering",
     "training",
-]
-
-[dependency-groups]
-dev = [
-    "coverage>=7.13.0",
-    "pytest>=9.0.2",
-    "pytest-cov>=7.0.0",
 ]
 
 [tool.pytest]
