@@ -6,11 +6,11 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP("PySpam Guard", dependencies=["httpx"])
 
 API_URL = "https://pyspam-api-605094789848.us-west1.run.app"
-SPAM_THRESHOLD = 0.8  # can be configured by AGENTS.MD
+DEFAULT_THRESHOLD = 0.8  # can be configured by AGENTS.MD
 
 
 @mcp.tool()
-async def scan_package(package_name: str) -> str:
+async def scan_package(package_name: str, threshold: float = DEFAULT_THRESHOLD) -> str:
     """
     Scans a Python package name against the PySpam detection model.
 
@@ -29,11 +29,11 @@ async def scan_package(package_name: str) -> str:
             data = response.json()
 
             # Parse results
-            score = data.get("prediction_score", 0.0)
+            score = data.get("prediction", 0.0)
 
             # We can return raw JSON strings, or a formatted string.
             # Formatted strings often help the LLM "reason" better about the result.
-            status = "DANGEROUS" if score > SPAM_THRESHOLD else "SAFE"
+            status = "DANGEROUS" if score > threshold else "SAFE"
 
             return (
                 f"Analysis for '{package_name}':\n"
