@@ -11,8 +11,7 @@ A tool for identifying spam packages on Python's registry.
 3. Not required, but [`pkgx`](https://pkgx.sh) is useful as well. 
 4. Not required, but [`xc`](https://xcfile.dev) is useful as well.
 
-> [!tip] No need for (1) and (2) if you have pkgx
-> 
+> [!TIP]
 > If you have pkgx, all you need to do is prefix everything with `pkgx ...` and it works
 > like magic
 
@@ -35,8 +34,7 @@ all metadata information for every single package published to PyPI. The
 [training.sql](sql/training.sql) query will generate a labeled dataset of spam vs. non-
 spam python packages
 
-> [!warning] what is `project.ground_truth`?
->
+> [!WARNING]
 > In the training.sql file, we reference `project.ground_truth`, which is a labeled 
 > dataset that we authored to training the data. We haven't published the dataset to
 > BQ yet, but for now, you would need need to create a table called `ground_truth`
@@ -90,8 +88,7 @@ curl http://127.0.0.1:8000/scan/requests
 
 ## Dashboard
 
-> [!note]
->
+> [!NOTE]
 > To run the dashboard locally, you need to have two terminals, one that runs the API,
 > and one that runs the dashboard. See [API](#api) for instructions on how to run the 
 > API
