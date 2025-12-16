@@ -1,4 +1,4 @@
-INPUT_PATH = "data/~/Downloads/bq-results-20251207-093855-1765100428299.json"
+INPUT_PATH = "data/bq-results-20251207-093855-1765100428299.json"
 OUTPUT_PATH = "data/20251207-bq-results-with-mid-pkgs.jsonl"
 
 # Example reference sets (you should replace / extend these)
