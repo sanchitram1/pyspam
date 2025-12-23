@@ -1,5 +1,3 @@
-import math
-
 import numpy as np
 import pandas as pd
 import pytest
@@ -8,7 +6,7 @@ from feature_engineering.dependency_offline import (
     deps_base_names,
     handle_dependency,
 )
-from feature_engineering.settings import BRAND_ALIASES, LEV_THRESHOLD, TOP_BRAND_PKGS
+from feature_engineering.settings import LEV_THRESHOLD
 
 
 class TestDepsBaseNames:
@@ -172,7 +170,9 @@ class TestHandleDependency:
         result = handle_dependency(basic_df)
         min_lev = result["min_dep_lev_to_brand"]
         # Should be numeric (including NaN)
-        assert all(pd.isna(v) or isinstance(v, (int, float, np.number)) for v in min_lev)
+        assert all(
+            pd.isna(v) or isinstance(v, (int, float, np.number)) for v in min_lev
+        )
 
     def test_min_dep_lev_non_negative(self, basic_df):
         """Test that min_dep_lev distances are non-negative."""

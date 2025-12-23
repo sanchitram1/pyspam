@@ -193,9 +193,10 @@ class TestHandleDescription:
         result = handle_description(df, legit_mask)
 
         # First two descriptions are identical, so should have same distance
-        assert result["dist_embed_to_legit_desc"].iloc[0] == result[
-            "dist_embed_to_legit_desc"
-        ].iloc[1]
+        assert (
+            result["dist_embed_to_legit_desc"].iloc[0]
+            == result["dist_embed_to_legit_desc"].iloc[1]
+        )
 
     def test_very_long_description(self):
         """Test handling of very long descriptions."""

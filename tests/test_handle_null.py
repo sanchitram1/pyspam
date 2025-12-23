@@ -317,7 +317,9 @@ class TestFillNull:
             {
                 "n_downloads_30d": [100.0 if i % 2 == 0 else np.nan for i in range(n)],
                 "cat_license_family": [
-                    "MIT" if i % 3 == 0 else ("other_or_unknown" if i % 3 == 1 else None)
+                    "MIT"
+                    if i % 3 == 0
+                    else ("other_or_unknown" if i % 3 == 1 else None)
                     for i in range(n)
                 ],
             }
@@ -404,5 +406,7 @@ class TestFillNull:
 
         # Verify specific values
         assert result["n_downloads_7d"].iloc[1] == 0  # Was NaN
-        assert result["cat_license_family"].iloc[1] == "unknown"  # Was "other_or_unknown"
+        assert (
+            result["cat_license_family"].iloc[1] == "unknown"
+        )  # Was "other_or_unknown"
         assert result["cat_license_family"].iloc[2] == "unknown"  # Was NaN

@@ -205,7 +205,9 @@ class TestHandleMaintainers:
         """Test that new features are numeric."""
         result = handle_maintainers(basic_df)
         assert pd.api.types.is_numeric_dtype(result["n_pkgs_by_maintainers_30d"])
-        assert pd.api.types.is_numeric_dtype(result["n_low_download_pkgs_by_maintainers"])
+        assert pd.api.types.is_numeric_dtype(
+            result["n_low_download_pkgs_by_maintainers"]
+        )
         assert pd.api.types.is_numeric_dtype(result["n_latest_project_urls"])
 
     def test_features_non_negative(self, basic_df):
@@ -437,18 +439,17 @@ class TestHandleMaintainers:
         df = pd.DataFrame(
             {
                 "pkg_name": [f"pkg{i}" for i in range(n)],
-                "distinct_authors": [
-                    [f"author{i % 10}@test.com"] for i in range(n)
-                ],
+                "distinct_authors": [[f"author{i % 10}@test.com"] for i in range(n)],
                 "distinct_maintainers": [
                     [f"maint{i % 5}@test.com"] if i % 3 == 0 else [] for i in range(n)
                 ],
-                "t_age_last_release_days": [np.random.randint(1, 365) for _ in range(n)],
-                "n_downloads_30d": [
-                    np.random.uniform(0, 1000) for _ in range(n)
+                "t_age_last_release_days": [
+                    np.random.randint(1, 365) for _ in range(n)
                 ],
+                "n_downloads_30d": [np.random.uniform(0, 1000) for _ in range(n)],
                 "latest_project_urls": [
-                    [f"url{j}" for j in range(np.random.randint(0, 5))] for _ in range(n)
+                    [f"url{j}" for j in range(np.random.randint(0, 5))]
+                    for _ in range(n)
                 ],
             }
         )

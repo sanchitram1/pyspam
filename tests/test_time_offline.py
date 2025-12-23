@@ -278,7 +278,11 @@ class TestHandleTime:
         df = pd.DataFrame(
             {
                 "pkg_name": ["pkg1", "pkg2", "pkg3"],
-                "t_time_of_day_bucket": ["evening_bucket", "evening_bucket", "evening_bucket"],
+                "t_time_of_day_bucket": [
+                    "evening_bucket",
+                    "evening_bucket",
+                    "evening_bucket",
+                ],
             }
         )
         result = handle_time(df)
@@ -350,7 +354,9 @@ class TestHandleTime:
         result1 = handle_time(df.copy())
         result2 = handle_time(df.copy())
 
-        pd.testing.assert_series_equal(result1["t_time_of_day"], result2["t_time_of_day"])
+        pd.testing.assert_series_equal(
+            result1["t_time_of_day"], result2["t_time_of_day"]
+        )
 
     def test_large_dataframe(self):
         """Test with large DataFrame."""
