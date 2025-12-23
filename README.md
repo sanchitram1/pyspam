@@ -1,6 +1,7 @@
 # PySpam 
 
 ![Tests Passing](https://github.com/sanchitram1/pyspam/actions/workflows/ci.yml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/sanchitram1/pyspam/badge.svg?branch=main)](https://coveralls.io/github/sanchitram1/pyspam?branch=main)
 
 A tool for identifying spam packages on Python's registry.
 
