@@ -18,3 +18,6 @@ data/
 htmlcov/
 coverage.xml
 *.cover
+
+# secrets
+.env
