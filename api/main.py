@@ -1,12 +1,24 @@
+import os
+
 import joblib
 import pandas as pd
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
+from fastapi.openapi.models import HTTPBearer
 
 from api.bq import fetch_package_metadata
 from feature_engineering.pipeline import transform_single_package
 
 app = FastAPI(title="PySpam API", description="API for PySpam")
+security = HTTPBearer()
+
+load_dotenv()
+
+API_TOKEN_SECRET = os.environ.get("API_TOKEN_SECRET")
+
+if not API_TOKEN_SECRET:
+    raise RuntimeError("API_TOKEN_SECRET not set")
 
 
 @app.get("/health")

@@ -189,14 +189,14 @@ Installs the packages exposed by this repo
 uv pip install -e .
 ```
 
-### full-sync
+### sync
 
 Gets all the requirements you need for developing everything
 
 Requires: install
 
 ```bash
-uv sync all-extras
+uv sync --all-extras
 ```
 
 ### test 
@@ -223,4 +223,10 @@ gcloud run deploy pyspam-api \
   --max-instances 1 \
   --allow-unauthenticated
   --set-secrets="API_TOKEN_SECRET=pyspam-jwt-secret:latest" \
+```
+
+### api
+
+```bash
+uv run uvicorn api.main:app --reload
 ```
