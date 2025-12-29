@@ -1,12 +1,26 @@
+import os
+import time
+
 import joblib
+import jwt
 import pandas as pd
-from fastapi import FastAPI, HTTPException
+from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from api.bq import fetch_package_metadata
 from feature_engineering.pipeline import transform_single_package
 
 app = FastAPI(title="PySpam API", description="API for PySpam")
+security = HTTPBearer()
+
+load_dotenv()
+
+API_TOKEN_SECRET = os.environ.get("API_TOKEN_SECRET")
+
+if not API_TOKEN_SECRET:
+    raise RuntimeError("API_TOKEN_SECRET not set")
 
 
 @app.get("/health")
@@ -14,8 +28,22 @@ def health_check():
     return {"status": "ok", "message": "PySpam API is running"}
 
 
+def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    token = credentials.credentials
+    try:
+        # check signature AND expiration
+        payload = jwt.decode(token, API_TOKEN_SECRET, algorithms=["HS256"])
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            401, detail="Token expired. Go to my portfolio to get a new one"
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(401, detail="Invalid token.")
+
+
 @app.get("/scan/{package_name}")
-def scan_package(package_name: str):
+def scan_package(package_name: str, auth_data: dict = Depends(verify_token)):
     # 1. Fetch Raw Data (BigQuery)
     print(f"Fetching {package_name}...")
     raw_data = fetch_package_metadata(package_name)
@@ -56,5 +84,23 @@ def scan_package(package_name: str):
             "raw_data": raw_data,
             "features": features_json,
             "prediction": prediction,
+            "user_type": auth_data.get("sub"),
         }
     )
+
+
+@app.post("/generate-key")
+def generate_key():
+    """Public endpoint to generate a JWT token valid for an hour"""
+    now = time.time()
+    payload = {
+        "sub": "portfolio-visitor",
+        "iat": now,
+        "exp": now + 3600,  # 1 hour expiration
+    }
+    token = jwt.encode(payload, API_TOKEN_SECRET, algorithm="HS256")
+    return {
+        "token": token,
+        "expires_in": "3600 seconds",
+        "note": "Include this in the 'Authorization: Bearer <token>' header",
+    }

@@ -10,6 +10,8 @@ dependencies = [
     "matplotlib>=3.10.7",
     "pandas==2.3.3",
     "plotly>=6.5.0",
+    "pyjwt>=2.10.1",
+    "python-dotenv>=1.2.1",
     "scikit-learn==1.7.1",
     "seaborn>=0.13.2",
     "statsmodels>=0.14.6",
