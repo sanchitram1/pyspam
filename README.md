@@ -67,24 +67,41 @@ The output is a set of joblib files that are written to [models](models/).
 
 ## API
 
-We implemented an API to demonstrate how we could use this model to actually evaluate
-different PyPI packages. The code lives in [api](api/main.py). To run it locally, you
-need to first set up your `gcloud`, so [bq.py](api/bq.py) (our BigQuery client) works
+We implemented a secured API to demonstrate how an external service (like an MCP server or LLM) could use this model to evaluate PyPI packages. The code lives in [api](api/main.py).
+
+### Local Setup
+
+To run it locally, you need two things:
+1. **Google Credentials:** Authenticate so [bq.py](api/bq.py) can query BigQuery.
+2. **Local Secret:** Set a dummy secret key for JWT generation.
 
 ```bash
+# 1. Authenticate with Google Cloud
 gcloud auth application-default login
-```
 
-Once done, you can run the API locally:
+# 2. Set a temporary secret for local testing
+export API_TOKEN_SECRET="local-dev-secret"
 
-```bash
+# 3. Start the server
 uv run uvicorn api.main:app --reload
 ```
 
-Test using
+### Usage
+
+**Step 1: Generate an API Key**
+
+The API is protected by JWT authentication. You must first generate a temporary access token, simulating how a user on the portfolio website would gain access.
 
 ```bash
-curl http://127.0.0.1:8000/scan/requests
+curl -X POST [http://127.0.0.1:8000/generate-key](http://127.0.0.1:8000/generate-key)
+```
+
+*Copy the `token` string from the JSON response.*
+
+**Step 2: Scan a package**: Replace `<YOUR_TOKEN>` with the token from Step 1:
+
+```bash
+curl -H "Authorization: Bearer <YOUR_TOKEN>" [http://127.0.0.1:8000/scan/requests](http://127.0.0.1:8000/scan/requests)
 ```
 
 ## Dashboard
@@ -118,6 +135,18 @@ gcloud config set project $PROJECT_ID
 gcloud services enable cloudbuild.googleapis.com run.googleapis.com
 gcloud run deploy pyspam-api --source .
 ```
+
+### Troubleshooting
+
+**`Error: "BigQuery execution failed... Project [old-project-id] has been deleted"`**
+
+Force a refresh of the local credentials for your current project:
+
+```bash
+gcloud auth application-default login
+```
+
+Make sure to sign in with the Google account associated with the active project.
 
 ## Model Context Protocol (MCP)
 
