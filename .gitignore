@@ -21,3 +21,6 @@ coverage.xml
 
 # secrets
 .env
+
+# issues
+ISSUES.md
