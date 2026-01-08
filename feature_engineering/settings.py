@@ -1,5 +1,12 @@
-INPUT_PATH = "data/bq-results-20251207-093855-1765100428299.json"
-OUTPUT_PATH = "data/20251207-bq-results-with-mid-pkgs.jsonl"
+from pathlib import Path
+
+# Use standardized paths that coordinate with training pipeline
+PROJECT_ROOT = Path(__file__).parent.parent
+DATA_DIR = PROJECT_ROOT / "data"
+
+# Default input/output paths (can be overridden via CLI args)
+INPUT_PATH = str(DATA_DIR / "raw_data.jsonl")
+OUTPUT_PATH = str(DATA_DIR / "features_engineered.jsonl")
 
 # Example reference sets (you should replace / extend these)
 TOP_LEGIT_PACKAGES = [
