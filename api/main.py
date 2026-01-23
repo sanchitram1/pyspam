@@ -7,6 +7,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from api.bq import fetch_package_metadata
@@ -14,6 +15,16 @@ from feature_engineering.pipeline import transform_single_package
 
 app = FastAPI(title="PySpam API", description="API for PySpam")
 security = HTTPBearer()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 load_dotenv()
 
