@@ -63,7 +63,8 @@ python_files = ["test_*.py", "*_test.py"]
 source = [
     "api",
     "feature_engineering",
-    "spam"
+    "spam",
+    "training"
 ]
 omit = [
     "*/__init__.py"
