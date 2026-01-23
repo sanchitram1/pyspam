@@ -1,15 +1,18 @@
 # Training Module
 
-Productionalized training pipeline for the spam detection model. This module orchestrates feature engineering and model training to produce a production-ready classifier.
+Training pipeline for the spam detection model. This module orchestrates feature
+engineering and model training to produce a classifier.
 
 ## Overview
 
 The training module is responsible for:
 
 1. **Loading feature-engineered data** from JSONL files
-2. **Preprocessing features** using scikit-learn pipelines (OneHotEncoding for categorical features, StandardScaling for numerical features)
+2. **Preprocessing features** using scikit-learn pipelines (OneHotEncoding for
+   categorical features, StandardScaling for numerical features)
 3. **Training an ensemble model** combining four diverse classifiers
-4. **Evaluating performance** using multiple metrics (accuracy, precision, recall, F1, ROC-AUC)
+4. **Evaluating performance** using multiple metrics (accuracy, precision,
+   recall, F1, ROC-AUC)
 5. **Saving the model and metadata** for deployment
 
 ## Architecture
@@ -17,9 +20,9 @@ The training module is responsible for:
 ```
 Raw Data (JSONL)
      ↓
-[feature_engineering/pipeline.py] 
+[feature_engineering/pipeline.py]
      ↓ (outputs: features_engineered.jsonl)
-[training/train.py] 
+[training/train.py]
      ↓ (outputs: model_production.joblib, model_metadata.json)
 [Docker/Cloud Deployment]
 ```
@@ -29,7 +32,7 @@ Raw Data (JSONL)
 ```
 training/
 ├── __init__.py              # Module initialization
-├── config.py                # Centralized configuration
+├── config.py                 # Centralized configuration
 ├── train.py                 # Model training script
 ├── pipeline.py              # Orchestration script for full workflow
 ├── ensemble_model.py        # Legacy model development notebook (for reference)
@@ -85,18 +88,21 @@ Loads feature-engineered JSONL data and prepares features (X) and target (y).
 
 #### `build_pipeline(X_train: pd.DataFrame) -> Pipeline`
 Constructs a scikit-learn Pipeline with preprocessing and model stages.
-- **Preprocessor**: ColumnTransformer with OneHotEncoder for categorical features
+- **Preprocessor**: ColumnTransformer with OneHotEncoder for categorical
+  features
 - **Scaler**: StandardScaler for numerical normalization
 - **Classifier**: VotingClassifier ensemble with 4 base models
 
 #### `evaluate_model(y_true, y_pred, y_pred_proba=None) -> dict`
 Computes evaluation metrics on test set.
-- Returns dictionary with: accuracy, precision, recall, f1, (and roc_auc if proba provided)
+- Returns dictionary with: accuracy, precision, recall, f1, (and roc_auc if
+  proba provided)
 
 #### `save_model_with_metadata(pipeline, metrics, output_dir, model_filepath=None, metadata_filepath=None) -> dict`
 Saves trained model and metadata to disk.
 - Saves model as joblib binary
-- Saves metadata as JSON including: timestamp, metrics, model_type, test_size, random_state, primary_metric
+- Saves metadata as JSON including: timestamp, metrics, model_type, test_size,
+  random_state, primary_metric
 
 #### `train_model(input_path: str | Path, output_dir: str | Path) -> tuple[Pipeline, dict]`
 Main training pipeline orchestrator.
@@ -128,7 +134,8 @@ Full end-to-end pipeline orchestration.
 
 ### `config.py`
 
-Centralized configuration module. Contains all constants, paths, and hyperparameters needed by the training pipeline. Modify this file to:
+Centralized configuration module. Contains all constants, paths, and
+hyperparameters needed by the training pipeline. Modify this file to:
 - Change model hyperparameters
 - Adjust train-test split ratio
 - Modify evaluation metrics
@@ -243,7 +250,8 @@ Metadata about the trained model:
 
 ### Ensemble Strategy
 
-The VotingClassifier uses **soft voting** where predictions are made based on the averaged probability estimates of the four base models:
+The VotingClassifier uses **soft voting** where predictions are made based on
+the averaged probability estimates of the four base models:
 
 1. **Decision Tree**: Fast, interpretable, captures non-linear patterns
 2. **Logistic Regression**: Fast, stable, provides probability calibration
@@ -257,7 +265,8 @@ The combination balances:
 
 ### Data Preprocessing
 
-1. **Categorical Features**: OneHotEncoder (drop='first' to avoid multicollinearity)
+1. **Categorical Features**: OneHotEncoder (drop='first' to avoid
+   multicollinearity)
    - handle_unknown='ignore' for new categories at test time
    - sparse_output=False for compatibility
 
@@ -344,11 +353,13 @@ Logs show:
 
 ## Future Improvements
 
-- [ ] **Hyperparameter Tuning**: GridSearchCV/RandomizedSearchCV for optimal hyperparameters
+- [ ] **Hyperparameter Tuning**: GridSearchCV/RandomizedSearchCV for optimal
+  hyperparameters
 - [ ] **Model Versioning**: Timestamp-based or git-hash-based versioning
 - [ ] **Automatic Model Promotion**: Promote models based on metric thresholds
 - [ ] **Cross-Validation**: K-fold cross-validation for more robust evaluation
-- [ ] **Feature Importance**: Extract and log feature importance from tree-based models
+- [ ] **Feature Importance**: Extract and log feature importance from tree-based
+  models
 - [ ] **Model Registry**: Track all trained models with their metrics
 - [ ] **Retraining Pipeline**: Automated retraining on new data
 - [ ] **Performance Monitoring**: Track model performance drift in production
@@ -364,7 +375,8 @@ Key dependencies (defined in `pyproject.toml`):
 
 ## Author Notes
 
-The training module was productionalized from a Jupyter notebook (`ensemble_model.py`) to enable:
+The training module was productionalized from a Jupyter notebook
+(`ensemble_model.py`) to enable:
 - Reproducible, version-controlled training
 - Integration with feature engineering pipeline
 - Containerized deployment via Docker

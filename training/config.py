@@ -2,7 +2,6 @@
 Configuration and constants for the training pipeline.
 """
 
-import os
 from pathlib import Path
 
 # ============================================================
