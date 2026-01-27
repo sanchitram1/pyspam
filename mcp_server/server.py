@@ -50,5 +50,36 @@ async def scan_package(package_name: str, threshold: float = DEFAULT_THRESHOLD) 
             )
 
 
+@mcp.tool()
+async def generate_key() -> str:
+    """
+    Generates an API key from the PySpam API.
+    
+    Use this tool to request a new API key for authentication.
+    """
+    endpoint = f"{API_URL}/generate-key"
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post(endpoint, timeout=10.0)
+            response.raise_for_status()
+            data = response.json()
+
+            api_key = data.get("api_key", "")
+            
+            return (
+                f"API Key Generated Successfully:\n"
+                f"- API Key: {api_key}\n"
+                f"- Full Response: {data}"
+            )
+
+        except httpx.HTTPStatusError as e:
+            return f"API Error: The server returned {e.response.status_code} when generating API key."
+        except httpx.RequestError as e:
+            return (
+                f"Connection Error: Could not reach the PySpam API. Details: {str(e)}"
+            )
+
+
 if __name__ == "__main__":
     mcp.run()
