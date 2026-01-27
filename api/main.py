@@ -21,6 +21,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://localhost:3000",
+        "https://sanchit-ram.web.app",
     ],
     allow_methods=["*"],
     allow_headers=["*"],
@@ -101,17 +102,28 @@ def scan_package(package_name: str, auth_data: dict = Depends(verify_token)):
 
 
 @app.post("/generate-key")
-def generate_key():
-    """Public endpoint to generate a JWT token valid for an hour"""
+def generate_key(service_secret: str = None):
+    """Generate a JWT token. Public users get 1 hour, service accounts get 30 days"""
     now = time.time()
+    
+    # Check if this is a service account request
+    if service_secret and service_secret == os.environ.get("SERVICE_ACCOUNT_SECRET"):
+        exp_time = 86400 * 30  # 30 days
+        sub = "mcp-service"
+        expires_in = "2592000 seconds (30 days)"
+    else:
+        exp_time = 3600  # 1 hour
+        sub = "portfolio-visitor"
+        expires_in = "3600 seconds"
+    
     payload = {
-        "sub": "portfolio-visitor",
+        "sub": sub,
         "iat": now,
-        "exp": now + 3600,  # 1 hour expiration
+        "exp": now + exp_time,
     }
     token = jwt.encode(payload, API_TOKEN_SECRET, algorithm="HS256")
     return {
         "token": token,
-        "expires_in": "3600 seconds",
+        "expires_in": expires_in,
         "note": "Include this in the 'Authorization: Bearer <token>' header",
     }

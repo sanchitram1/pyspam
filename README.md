@@ -253,10 +253,10 @@ ruff check . --fix
 ```bash
 gcloud run deploy pyspam-api \
   --source . \
-  -- region us-west1 \
+  --region us-west1 \
   --max-instances 1 \
-  --allow-unauthenticated
-  --set-secrets="API_TOKEN_SECRET=pyspam-jwt-secret:latest" \
+  --allow-unauthenticated \
+  --set-secrets="API_TOKEN_SECRET=pyspam-jwt-secret:latest" 
 ```
 
 ### api
